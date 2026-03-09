@@ -48,6 +48,7 @@ public:
 #endif
 
 	// see if single suggestions are automatically inserted
+	// this only works when triggered manually
 	bool autoInsertSingleSuggestions = false;
 
 	// delay in milliseconds between autocomplete trigger and suggestions popup

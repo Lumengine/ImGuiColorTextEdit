@@ -4513,6 +4513,7 @@ void TextEditor::Autocomplete::setConfig(const AutoCompleteConfig* config) {
 
 bool TextEditor::Autocomplete::startTyping(Cursors& cursors) {
 	if (!active && !requestActivation && configured && configuration.triggerOnTyping) {
+		triggeredManually = false;
 		start(cursors);
 		return true;
 
@@ -4528,6 +4529,7 @@ bool TextEditor::Autocomplete::startTyping(Cursors& cursors) {
 
 bool TextEditor::Autocomplete::startShortcut(Cursors& cursors) {
 	if (!active && !requestActivation && configured && configuration.triggerOnShortcut) {
+		triggeredManually = true;
 		start(cursors);
 		return true;
 
@@ -4729,7 +4731,7 @@ bool TextEditor::Autocomplete::render(Document& document, Cursors& cursors, cons
 					requestDeactivation = true;
 					result = true;
 
-				} else if (configuration.autoInsertSingleSuggestions && state.suggestions.size() == 1) {
+				} else if (configuration.autoInsertSingleSuggestions && triggeredManually && state.suggestions.size() == 1) {
 					requestDeactivation = true;
 					result = true;
 				}
