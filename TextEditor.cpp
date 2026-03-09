@@ -691,16 +691,7 @@ void TextEditor::handleKeyboardInputs() {
 	#endif
 
 		// ignore specific keys when autocomplete is active, they will be handled later
-		if (autocomplete.isActive()) {
-			for (auto key : {ImGuiKey_Escape, ImGuiKey_Tab, ImGuiKey_Enter, ImGuiKey_KeypadEnter, ImGuiKey_UpArrow, ImGuiKey_DownArrow}) {
-				if (ImGui::IsKeyPressed(key)) {
-					return;
-				}
-			}
-		}
-
-		// ignore escape key when find/replace window is visible, it will be handled later
-		if (findReplaceVisible && ImGui::IsKeyPressed(ImGuiKey_Escape)) {
+		if (autocomplete.isActive() && autocomplete.isSpecialKeyPressed()) {
 			return;
 		}
 
@@ -756,7 +747,15 @@ void TextEditor::handleKeyboardInputs() {
 		else if (!readOnly && language && isShortcut && ImGui::IsKeyPressed(ImGuiKey_Slash)) { toggleComments(); }
 
 		// find/replace support
-		else if (isShortcut && ImGui::IsKeyPressed(ImGuiKey_F)) { openFindReplace(); }
+		else if (isShortcut && ImGui::IsKeyPressed(ImGuiKey_F)) {
+			if (autocomplete.isActive()) {
+				autocomplete.cancel();
+				findCancelledAutocomplete = true;
+			}
+
+			openFindReplace();
+		}
+
 		else if (isShiftShortcut && ImGui::IsKeyPressed(ImGuiKey_F)) { findAll(); }
 		else if (isShortcut && ImGui::IsKeyPressed(ImGuiKey_G)) { findNext(); }
 
@@ -797,13 +796,21 @@ void TextEditor::handleKeyboardInputs() {
 		}
 
 		// handle escape key
-		else if (ImGui::IsKeyPressed(ImGuiKey_Escape) && cursors.hasMultiple()) {
-			cursors.clearAdditional();
+		else if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
+			if (autocomplete.isActive()) {
+				autocomplete.cancel();
+
+			} else if (findReplaceVisible) {
+				closeFindReplace();
+
+			} else if (cursors.hasMultiple()) {
+				cursors.clearAdditional();
+			}
 		}
 
 		// handle regular text
 		if (!io.InputQueueCharacters.empty()) {
-	        // ignore Ctrl inputs, but need to allow Alt+Ctrl as some keyboards (e.g. German) use AltGR (which _is_ Alt+Ctrl) to input certain characters
+	        // ignore Ctrl inputs, but need to allow Alt+Ctrl as some keyboards (e.g. German) use AltGR (which is Alt+Ctrl) to input certain characters
 			if (!(io.KeyCtrl && !io.KeyAlt) && !readOnly) {
 				for (auto i = 0; i < io.InputQueueCharacters.size(); i++) {
 					auto character = io.InputQueueCharacters[i];
@@ -4142,6 +4149,10 @@ void TextEditor::renderFindReplace(ImVec2 pos, float width) {
 		if (focusOnFind) {
 			ImGui::SetKeyboardFocusHere();
 			focusOnFind = false;
+
+		} else if (findCancelledAutocomplete) {
+			ImGui::SetKeyboardFocusHere();
+			findCancelledAutocomplete = false;
 		}
 
 		if (inputString("###find", &findText, ImGuiInputTextFlags_AutoSelectAll)) {
@@ -4194,10 +4205,6 @@ void TextEditor::renderFindReplace(ImVec2 pos, float width) {
 		ImGui::SameLine();
 
 		if (ImGui::Button("x", ImVec2(optionWidth, 0.0f))) {
-			closeFindReplace();
-		}
-
-		if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
 			closeFindReplace();
 		}
 
@@ -4666,11 +4673,6 @@ bool TextEditor::Autocomplete::render(Document& document, Cursors& cursors, cons
 		}
 	}
 
-	// close autocomplete when user hits escape key
-	if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
-		requestDeactivation = true;
-	}
-
 	// open popup window
 	bool result = false;
 	auto cursorScreenPos = ImGui::GetCursorScreenPos();
@@ -4777,6 +4779,21 @@ bool TextEditor::Autocomplete::render(Document& document, Cursors& cursors, cons
 void TextEditor::Autocomplete::setSuggestions(const std::vector<std::string>& suggestions) {
 	state.suggestions = suggestions;
 	currentSelection = 0;
+}
+
+
+//
+//	TextEditor::Autocomplete::isSpecialKeyPressed
+//
+
+bool TextEditor::Autocomplete::isSpecialKeyPressed() const {
+	for (auto key : {ImGuiKey_Tab, ImGuiKey_Enter, ImGuiKey_KeypadEnter, ImGuiKey_UpArrow, ImGuiKey_DownArrow}) {
+		if (ImGui::IsKeyPressed(key)) {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 
