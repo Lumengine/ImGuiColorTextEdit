@@ -384,7 +384,7 @@ public:
 	};
 
 	// language support
-	class Language {
+	class IMGUI_API Language {
 	public:
 		// name of the language
 		std::string name;
@@ -596,7 +596,7 @@ public:
 	};
 
 	// support functions for unicode codepoints
-	class CodePoint {
+	class IMGUI_API CodePoint {
 	public:
 		static std::string_view::const_iterator skipBOM(std::string_view::const_iterator i, std::string_view::const_iterator end);
 		static std::string_view::const_iterator read(std::string_view::const_iterator i, std::string_view::const_iterator end, ImWchar* codepoint);
@@ -717,7 +717,7 @@ protected:
 	};
 
 	// a single cursor
-	class Cursor {
+	class IMGUI_API Cursor {
 	public:
 		// constructors
 		Cursor() = default;
@@ -767,7 +767,7 @@ protected:
 	};
 
 	// the current list of cursors
-	class Cursors : public std::vector<Cursor> {
+	class IMGUI_API Cursors : public std::vector<Cursor> {
 	public:
 		// constructor
 		Cursors() { clearAll(); }
@@ -871,7 +871,7 @@ protected:
 	};
 
 	// the document being edited (Lines of Glyphs)
-	class Document : public std::vector<Line> {
+	class IMGUI_API Document : public std::vector<Line> {
 	public:
 		// constructor
 		Document() { emplace_back(); }
@@ -991,7 +991,7 @@ protected:
 	};
 
 	// a collection of actions for a complete transaction
- 	class Transaction : public std::vector<Action> {
+ 	class IMGUI_API Transaction : public std::vector<Action> {
 	public:
 		// access state before/after transactions
 		inline void setBeforeState(const Cursors& cursors) { before = cursors; }
@@ -1013,7 +1013,7 @@ protected:
 	};
 
 	// transaction list to support do/undo/redo
- 	class Transactions : public std::vector<std::shared_ptr<Transaction>> {
+ 	class IMGUI_API Transactions : public std::vector<std::shared_ptr<Transaction>> {
 	public:
 		// reset the transactions
 		void reset();
@@ -1042,7 +1042,7 @@ protected:
 	} transactions;
 
 	// text colorizer (handles language tokenizing)
-	class Colorizer {
+	class IMGUI_API Colorizer {
 	public:
 		// update colors in entire document
 		void updateEntireDocument(Document& document, const Language* language);
@@ -1076,7 +1076,7 @@ protected:
 	};
 
 	// class responsible for matching brackets
-	class Bracketeer : public std::vector<BracketPair> {
+	class IMGUI_API Bracketeer : public std::vector<BracketPair> {
 	public:
 		// reset the bracketeer
 		void reset();
@@ -1100,7 +1100,7 @@ protected:
 	} bracketeer;
 
 	// autocomplete class
-	class Autocomplete {
+	class IMGUI_API Autocomplete {
 	public:
 		// set the autocomplete configuration
 		void setConfig(const AutoCompleteConfig* c);
