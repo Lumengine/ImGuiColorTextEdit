@@ -31,7 +31,7 @@
 //	TextEditor
 //
 
-class TextEditor {
+class IMGUI_API TextEditor {
 public:
 	// constructor
 	TextEditor();
