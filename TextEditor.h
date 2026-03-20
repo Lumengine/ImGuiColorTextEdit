@@ -546,7 +546,7 @@ public:
 
 	// utility class to support some autocomplete implementations
 	// this is not used by default but can be used in autocomplete callbacks (see example app)
-	class Trie {
+	class IMGUI_API Trie {
 	public:
 		// constructor
 		Trie() { clear(); }
