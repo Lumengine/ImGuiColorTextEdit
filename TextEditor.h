@@ -1064,6 +1064,7 @@ protected:
 	// details about bracketed text
 	class BracketPair {
 	public:
+		BracketPair() = default;
 		BracketPair(ImWchar sc, Coordinate s, ImWchar ec, Coordinate e, int l) : startChar(sc), start(s), endChar(ec), end(e), level(l) {}
 		ImWchar startChar;
 		Coordinate start;
