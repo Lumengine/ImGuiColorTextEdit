@@ -897,6 +897,15 @@ void TextEditor::handleMouseInteractions() {
 			glyphCoordinate,
 			cursorCoordinate);
 
+		// update hovered glyph for external queries
+		if (overText) {
+			hoveredGlyphLine = glyphCoordinate.line;
+			hoveredGlyphColumn = glyphCoordinate.column;
+		} else {
+			hoveredGlyphLine = -1;
+			hoveredGlyphColumn = -1;
+		}
+
 		// show text cursor if required
 		if (ImGui::IsWindowFocused() && overText) {
 			ImGui::SetMouseCursor(ImGuiMouseCursor_TextInput);

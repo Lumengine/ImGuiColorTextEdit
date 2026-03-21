@@ -164,6 +164,11 @@ public:
 	inline float GetLineHeight() const { return glyphSize.y; }
 	inline float GetGlyphWidth() const { return glyphSize.x; }
 
+	// access mouse hover position (updated each Render(), -1 if not hovering text)
+	inline int GetHoveredLine() const { return hoveredGlyphLine; }
+	inline int GetHoveredColumn() const { return hoveredGlyphColumn; }
+	inline bool IsHoveringText() const { return hoveredGlyphLine >= 0; }
+
 	// note on setting cursor and scrolling
 	//
 	// calling SetCursor or ScrollToLine has no effect until the next call to Render
@@ -1296,6 +1301,10 @@ protected:
 	int lastVisibleColumn;
 	float verticalScrollBarSize;
 	float horizontalScrollBarSize;
+
+	// mouse hover state (updated during Render)
+	int hoveredGlyphLine = -1;
+	int hoveredGlyphColumn = -1;
 	float cursorAnimationTimer = 0.0f;
 	bool ensureCursorIsVisible = false;
 	int scrollToLineNumber = -1;
