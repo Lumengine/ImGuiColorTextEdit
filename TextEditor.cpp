@@ -2804,8 +2804,8 @@ void TextEditor::Document::deleteText(Coordinate start, Coordinate end) {
 		at(line).colorize = true;
 	}
 
-	// update maximum column counts
-	updateMaximumColumn(start.line, end.line);
+	// update maximum column counts (clamp end.line since lines were deleted)
+	updateMaximumColumn(start.line, std::min(end.line, lineCount() - 1));
 	updated = true;
 }
 

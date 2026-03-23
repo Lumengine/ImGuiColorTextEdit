@@ -545,6 +545,9 @@ public:
 	// configure and activate autocomplete (passing nullptr deactivates it)
 	inline void SetAutoCompleteConfig(const AutoCompleteConfig* config) { autocomplete.setConfig(config); }
 
+	// check if autocomplete popup is currently visible
+	inline bool IsAutoCompleteActive() const { return autocomplete.isActive(); }
+
 	// provide autocomplete suggestions asynchronously (in case a callback takes to long and lookup is handled in a separate thread/process)
 	// this call is not threadsafe and must be called from the rendering thread (you must synchronize with your lookup thread yourself)
 	inline void SetAutoCompleteSuggestions(const std::vector<std::string>& suggestions) { autocomplete.setSuggestions(suggestions); }
