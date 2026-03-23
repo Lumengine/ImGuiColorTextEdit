@@ -4801,6 +4801,12 @@ bool TextEditor::Autocomplete::render(Document& document, Cursors& cursors, cons
 
 			} else {
 				ImGui::TextUnformatted(configuration.noSuggestionsLabel.c_str());
+
+				// Close popup on Enter, Tab or Escape when no suggestions
+				if (ImGui::IsKeyPressed(ImGuiKey_Tab) || ImGui::IsKeyPressed(ImGuiKey_Enter) ||
+					ImGui::IsKeyPressed(ImGuiKey_KeypadEnter) || ImGui::IsKeyPressed(ImGuiKey_Escape)) {
+					requestDeactivation = true;
+				}
 			}
 		}
 
