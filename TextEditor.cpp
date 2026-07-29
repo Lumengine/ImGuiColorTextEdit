@@ -3541,7 +3541,7 @@ void TextEditor::Document::deleteLines(int start, int end) {
 
 void TextEditor::Document::clearDocument() {
 	if (deletor) {
-		for (auto i = 0; i <= lineCount(); i++) {
+		for (auto i = 0; i < lineCount(); i++) {
 			deletor(i, at(i).userData);
 		}
 	}
